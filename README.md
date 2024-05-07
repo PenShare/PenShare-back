@@ -3,9 +3,8 @@
 ## Installation
 
 ### Clone the Repository to Your Local Machine:
-    ```shell
+
     git clone https://github.com/username/project-name.git
-    ```
 
 ### Navigate to the Project Directory: Change into the directory of the cloned project:
     ```shell

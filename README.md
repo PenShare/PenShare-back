@@ -1,25 +1,30 @@
 # PenShare-back
 
-Installation
+## Installation
 
-Clone the Repository to Your Local Machine:
+### Clone the Repository to Your Local Machine:
+    ```shell
+    git clone https://github.com/username/project-name.git
+    ```
 
-git clone https://github.com/username/project-name.git
+### Navigate to the Project Directory: Change into the directory of the cloned project:
+    ```shell
+    cd project-name
+    ```
 
-Navigate to the Project Directory: Change into the directory of the cloned project:
+### Install the Required Dependencies: Install the necessary dependencies by running the following command:
+    ```shell
+    npm install
+    ```
 
-cd project-name
+### Create a Configuration File and Set the Required Settings: 
+    ```shell
+    cp .env.example .env
+    ```
 
-Install the Required Dependencies: Install the necessary dependencies by running the following command:
+### Then, open the .env file in a text editor and fill in the settings correctly.
 
-npm install
-
-Create a Configuration File and Set the Required Settings: 
-
-cp .env.example .env
-
-Then, open the .env file in a text editor and fill in the settings correctly.
-
-Start the Application: To start the application, run the following command:
-
-npm start
+### Start the Application: To start the application, run the following command:
+    ```shell
+    npm start
+    ```

@@ -1,43 +1,36 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+const mongoose = require("mongoose");
 
-const noteSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
+const Schema = mongoose.Schema;
 
-    description: {
-        type: String,
-        required: true,
-        trim: true
+const noteSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    uploadedAt: {
-        type: Date,
-        default: Date.now
+    content: {
+      type: String,
+      required: true,
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+    author: {
+      type: String,
+      required: true,
     },
-    url: {
-        type: String,
-        required: true
+    photo: {
+      type: String,
+      required: false,
     },
-    not_bilgi: {
-        type: String,
-        required: true
-
+    updatedAt: {
+      type: Date,
+      required: false,
     },
-},
-    {
-        timeseries: true,
-        minimize: true,
-    }
+  },
+  {
+    timestamps: true,
+    minimize: true,
+  }
 );
 
 const Note = mongoose.model("Note", noteSchema, "note");
 
-export default Note;
+module.exports = Note;

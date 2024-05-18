@@ -1,53 +1,53 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-const { Schema } = mongoose;
-import validator from "validator";
+const mongoose = require("mongoose");
 
+const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
     name: {
       type: Schema.Types.String,
       required: [true, "Kullanıcı ismi boş bırakılamaz."],
-      lowercase: true,
-      //validate: [validator.isAlphanumeric, "Kullanıcı ismi sadece harf ve rakam içerebilir."],
     },
-    surname:{
+    surname: {
       type: Schema.Types.String,
-      required: [true, "Kullanıcı soyadı boş bırakılamaz."],
-      lowercase: true,
-      //validate: [validator.isAlphanumeric, "Kullanıcı ismi sadece harf ve rakam içerebilir."],
+      required: false,
     },
     email: {
       type: Schema.Types.String,
-      required: [true, "E-mail adresi boş bırakılamaz."],
+      required:  [true, "E-mail adresi boş bırakılamaz."],
       unique: true,
       validate: [validator.isEmail, "Geçerli bir e-mail adresi giriniz."],
     },
     password: {
       type: Schema.Types.String,
       required: [true, "Şifre boş bırakılamaz."],
-      minLength: [6, "Şifre en az 6 karakter olmalıdır."],
+      min: [4, "Şifre en az 4 karakter olmalıdır."],
     },
-    sınıf:{
-       type:Schema.Types.String,
-       required: [true, "Sınıf boş bırakılamaz."],
-    },
+    notes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Note",
+      },
+    ],
   },
   {
     minimize: true,
     timestamps: true,
-    autoIndex: true
+    autoIndex: true,
   }
 );
 
+//eyüphan 
 userSchema.pre("save", function(next) {
- const user=this
- bcrypt.hash(user.password, 10,(err,hash) => {
-  user.password = hash
-  next();
-})
-})
-const User = mongoose.model("User", userSchema,"user")
+  const user=this
+  bcrypt.hash(user.password, 10,(err,hash) => {
+   user.password = hash
+   next();
+ })
+ })
 
-export default User;
+
+
+const User = mongoose.model("User", userSchema, "user");
+
+module.exports = User;

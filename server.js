@@ -15,7 +15,7 @@ const corsOrigin = {
 app.use(cors(corsOrigin));
 
 serverConfig();
-const PORT = 6000 || process.env.PORT;
+const PORT = 5000 || process.env.PORT;
 
 app.use("/user", userRouter);
 app.use("/note", noteRouter);

@@ -5,7 +5,8 @@ const { StatusCodes } = require("http-status-codes");
 
 exports.register = async (req, res) => {
   try {
-    let { name, surname, password, email } = req.body;
+    let { name, surname, password, email,currentClass } = req.body;
+    console.log(req.body)
     const userkontrol = await User.findOne({ email });
     if (userkontrol) {
       res.status(400).json({ message: "Bu e-posta adresi zaten kayıtlı" });
@@ -16,7 +17,9 @@ exports.register = async (req, res) => {
       surname,
       password: _password,
       email,
+      currentClass,
     });
+    
     const json = await user.save();
     res
       .json({ data: json, message: "Kayıt başarılı" })

@@ -39,11 +39,7 @@ const userSchema = new Schema(
 
 //eyüphan 
 userSchema.pre("save", function(next) {
-  const user=this
-  bcrypt.hash(user.password, 10,(err,hash) => {
-   user.password = hash
    next();
- })
  })
 
 

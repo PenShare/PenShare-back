@@ -1,7 +1,8 @@
 const User = require("../models/user.model");
 const md5 = require("md5");
 const { StatusCodes } = require("http-status-codes");
-
+const { updateSearchIndex } = require("../models/note.model");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
@@ -22,7 +23,7 @@ exports.register = async (req, res) => {
     
     const json = await user.save();
     res
-      .json({ data: json, message: "Kayıt başarılı" })
+      .json({ user:user._id ,data: json, message: "Kayıt başarılı" })
       .status(StatusCodes.CREATED);
   } catch (error) {
     res.status(500).json({ message: "Kullanıcı kaydı başarısız" });
@@ -38,6 +39,13 @@ exports.login = async (req, res) => {
       email: email,
       password: _password,
     });
+    const token=createToken(json._id)
+    res.cookie("jwt", token,{
+      httpOnly:true,
+      secure:true,
+      maxAge:1000*60*60*24
+    })
+    
     if (!json) {
       throw new Error("Kullanıcı bulunamadı")
     } 
@@ -47,6 +55,16 @@ exports.login = async (req, res) => {
   }
 };
 
+//kullanıcı id sine göre token oluşturalım.
+exports.createToken = (userId) => {
+  return jwt.sign({userId}, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+}
+
+
+
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -55,6 +73,39 @@ exports.getAllUsers = async (req, res) => {
     res.json({ message: "Kullanıcılar getirilemedi" }).status(500);
   }
 };
+
+exports.ChangePassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const _password = md5(password);
+    const user = await User.findOneAndUpdate({ password: _password });
+    res.json({ data: user }).status(StatusCodes.OK);
+  } catch (error) {
+    res.json({ message: "Şifre değiştirilemedi" }).status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+}
+
+exports.getDashbord = async (req, res) => {// notlarım mı yoksa dashboard mı olmalı klavuza bak 
+  
+  // videodaki adamın yaptığı  
+  //const photos = await Photo.find({ user: res.locals.user._id });
+  //const user = await User.findById({ _id: res.locals.user._id }).populate([
+ 
+  
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    const notes = await Notes.find({ id: id });
+    res.json({ data: user, notes }).status(StatusCodes.OK);
+  } catch (error) {
+    res.json({ message: "Kullanıcı getirilemedi" }).status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+}
+
+
+
+
+
 
 
 

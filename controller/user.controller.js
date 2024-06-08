@@ -39,12 +39,12 @@ exports.login = async (req, res) => {
       email: email,
       password: _password,
     });
-    const token=createToken(json._id)
-    res.cookie("jwt", token,{
-      httpOnly:true,
-      secure:true,
-      maxAge:1000*60*60*24
-    })
+    // const token=createToken(json._id)
+    // res.cookie("jwt", token,{
+    //   httpOnly:true,
+    //   secure:true,
+    //   maxAge:1000*60*60*24
+    // })
     
     if (!json) {
       throw new Error("Kullanıcı bulunamadı")
@@ -56,11 +56,11 @@ exports.login = async (req, res) => {
 };
 
 //kullanıcı id sine göre token oluşturalım.
-exports.createToken = (userId) => {
-  return jwt.sign({userId}, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
-}
+// exports.createToken = (userId) => {
+//   return jwt.sign({userId}, process.env.JWT_SECRET, {
+//     expiresIn: "1d",
+//   });
+// }
 
 
 

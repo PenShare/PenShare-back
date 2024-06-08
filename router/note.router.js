@@ -10,7 +10,7 @@ router.delete("/deleteNoteById:id", noteController.deleteNoteById)
 router.get("/getNotesByClass", noteController.getNotesByClass)
 router.get("/getNotesByLesson", noteController.getNotesByLesson)
 router.get("/MyNotes", noteController.MyNotes)
-router.get("/downloadNote", noteController.downloadNote)
+// router.get("/downloadNote", noteController.downloadNote)
 
 
 

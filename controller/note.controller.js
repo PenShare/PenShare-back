@@ -3,34 +3,51 @@ const User = require("../models/user.model.js");
 const { StatusCodes } = require("http-status-codes");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
-
+const path = require("path");
 
 exports.createNote = async (req, res) => {
+  console.log("Request body:", req.body);
+  console.log("Request files:", req.files);
+
   try {
-    const result = await cloudinary.uploader.upload(
-      req.files.note.tempFilePath,//not ekleme ekranında dosya ismine göre değiştirilmeli 
-      {use_filename:true,
-      folder:"PenShare"}
-    )
-    const {author,ders,url,image_id,} = req.body;
-    const note = new Note({
-      author:res.locals.user._id,
-      url: result.secure_url,// 
-      image_id: result.public_id,//
-      ders,
+    const { ders, author } = req.body;
+
+    if (!req.files || !req.files.file) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "No file uploaded" });
+    }
+
+    const file = req.files.file;
+    console.log("File:",file);
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      use_filename: true,
+      folder: "PenShare"
     });
+
+    const note = new Note({
+      author,
+      ders,
+      url: result.secure_url,
+      image_id: result.public_id,
+      onay: false,
+      title: req.body.title,
+      görüntülenme: 0,
+      type:file.mimetype
+    });
+
     const json = await note.save();
-    const user = await User.findOne({ email: author });
-    user.notes.push(json._id);
-    await user.save();
-    res
-      .json({ data: json, message: "Not yayınlama işlemi başarılı" })
-      .status(StatusCodes.CREATED);
-      fs.unlinkSync(req.files.image.tempFilePath);// dosya ismi önemli 
+
+    const user = await User.findById(author);
+    if (user) {
+      user.notes.push(json._id);
+      await user.save();
+    }
+
+    fs.unlinkSync(file.tempFilePath);
+
+    res.status(StatusCodes.CREATED).json({ data: json, message: "Not yayınlama işlemi başarılı" });
   } catch (error) {
-    res
-      .json({ message: "Not yayınlama işlemi başarısız" })
-      .status(StatusCodes.INTERNAL_SERVER_ERROR);
+    console.error("Error creating note:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Not yayınlama işlemi başarısız" });
   }
 };
 
@@ -57,6 +74,16 @@ exports.getNoteById = async (req, res) => {
   }
 };
 
+exports.MyFalseNote = async (req, res) => {
+  try {
+    const notes = await Note.find({onay: false });
+    res.json({ data: notes }).status(StatusCodes.OK);
+  } catch (error) {
+    res
+      .json({ message: "Notlar getirilemedi" })
+      .status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+};
  
 exports.deleteNote = async (req, res) => {//
   try {
@@ -128,15 +155,17 @@ exports.getNotesByClass = async (req, res) => {
 
 exports.getNotesByLesson = async (req, res) => {
   try {
-    const { ders } = req.params;
+    const { ders } = req.query;
+    console.log(ders);
     const notes = await Note.find({ ders });
-    res.json({ data: notes }).status(StatusCodes.OK);
+    console.log(notes);
+    res.status(StatusCodes.OK).json({ data: notes });
   } catch (error) {
-    res
-      .json({ message: "Notlar getirilemedi" })
-      .status(StatusCodes.INTERNAL_SERVER_ERROR);
+    console.error("Error:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Notlar getirilemedi" });
   }
 };
+
 
 exports.MyNotes = async (req, res) => {
   try {

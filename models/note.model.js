@@ -51,7 +51,11 @@ const noteSchema = new Schema(
     onay: {
       type: Boolean,
       defaultValue: false,
-    }
+    },
+    type: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

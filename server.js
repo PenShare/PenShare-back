@@ -34,8 +34,8 @@ app.use(fileUpload({
 serverConfig();
 const PORT = 5000 || process.env.PORT;
 
-//?
-app.use('*',checkUser);// tüm işlemlerde check user yapılmasını sağlar 
+
+app.use('*',checkUser);
 app.use("/user", userRouter);
 app.use("/note", noteRouter);
 

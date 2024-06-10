@@ -10,7 +10,7 @@ exports.createNote = async (req, res) => {
   console.log("Request files:", req.files);
 
   try {
-    const { ders, author } = req.body;
+    const { ders, author,name,surname } = req.body;
 
     if (!req.files || !req.files.file) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "No file uploaded" });
@@ -31,7 +31,9 @@ exports.createNote = async (req, res) => {
       onay: false,
       title: req.body.title,
       görüntülenme: 0,
-      type:file.mimetype
+      type:file.mimetype,
+      name,
+      surname
     });
 
     const json = await note.save();

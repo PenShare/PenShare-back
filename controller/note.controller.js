@@ -170,7 +170,8 @@ exports.getNotesByLesson = async (req, res) => {
 
 
 exports.MyNotes = async (req, res) => {
-  const { userID } = req.params;
+  const { userID } = req.query;
+  console.log("userID:", userID)
   try {
     const notes = await Note.find({ author: userID });
     res.json({ data: notes }).status(StatusCodes.OK);

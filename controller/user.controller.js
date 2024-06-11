@@ -19,6 +19,7 @@ exports.register = async (req, res) => {
       password: _password,
       email,
       currentClass,
+      isadmin: false
     });
 
     const json = await user.save();

@@ -87,34 +87,6 @@ exports.MyFalseNote = async (req, res) => {
   }
 };
  
-exports.deleteNote = async (req, res) => {//
-  try {
-    const { id } = req.params;
-    const note = await Note.findByIdAndDelete(id);
-    const user = await User.findOne({ email: note.author });
-    user.notes = user.notes.filter((noteId) => noteId.toString() !== id);
-    await user.save();
-    res.json({ data: note }).status(StatusCodes.OK);
-  } catch (error) {
-    res
-      .json({ message: "Not silinemedi" })
-      .status(StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-};
-
-exports.notsil = async (req, res) => {//
-  try {
-    const not = await Note.findById(req.params.id);
-    const notId = not.image_id
-    await cloudinary.uploader.destroy(notId);
-    await Note.findOneAndRemove(req.params.id);
-    res.json({ message: "Not silme işlemi başarılı" }).status(StatusCodes.OK);
-  } catch (error) {
-    res
-      .json({ message: "Not silme işlemi başarısız" })
-      .status(StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-}
 
 exports.getNotesByAuthor = async (req, res) => {
   try {
@@ -128,20 +100,7 @@ exports.getNotesByAuthor = async (req, res) => {
   }
 };
 
-exports.deleteNoteById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const note = await Note.findByIdAndDelete(id);
-    const photo_id = Note.photo_id;
-    await cloudinary.uploader.destroy(photo_id);
-    await Note.findByIdAndDelete(id);
-    res.json({ message: "Not silme işlemi başarılı" }).status(StatusCodes.OK);
-  } catch (error) {
-    res
-      .json({ message: "Not silme işlemi başarısız" })
-      .status(StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-}
+
 
 exports.getNotesByClass = async (req, res) => {
   try {
@@ -196,3 +155,21 @@ exports.NoteDownload = async (req, res) => {
   }
 }
 
+exports.deleteNoteById = async (req, res) => {
+    console.log(req.body)
+  try {
+
+    const { id } = req.body;
+    const note = await Note.findByIdAndDelete(id);
+    if (note) {
+      await cloudinary.uploader.destroy(note.image_id);
+      res.json({ data: note }).status(StatusCodes.OK);
+    } else {
+      res.json({ message: "Not silinemedi" }).status(StatusCodes.NOT_FOUND);
+    }
+  } catch (error) {
+    res
+      .json({ message: "Not silinemedi" })
+      .status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+};

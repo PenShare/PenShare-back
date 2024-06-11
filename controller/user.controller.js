@@ -75,13 +75,14 @@ exports.ChangePassword = async (req, res) => {
   try {
     const { id, password } = req.body;
     const _password = md5(password);
-    const user = await User.findByIdAndUpdate(id, { password: _password });
+    const user = await User.findByIdAndUpdate(id, { password: _password },{new: true});
     res.json({ data: user }).status(StatusCodes.OK);
   }
   catch (error) {
     res.json({ message: "Şifre güncellenemedi" }).status(StatusCodes.INTERNAL_SERVER_ERROR);
   }
 }
+
 
 exports.getDashbord = async (req, res) => {
   try {

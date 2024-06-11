@@ -16,9 +16,13 @@ const userSchema = new Schema(
       type: Schema.Types.String,
       required:  [true, "E-mail adresi boş bırakılamaz."],
       unique: true,
-     // validate: [validator.isEmail, "Geçerli bir e-mail adresi giriniz."],
+     //validate: [validator.isEmail, "Geçerli bir e-mail adresi giriniz."],
     },
-    
+    isadmin: {
+      type: Schema.Types.Boolean,
+      required: false,
+    },
+          
 
     password: {
       type: Schema.Types.String,

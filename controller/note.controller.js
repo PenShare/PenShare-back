@@ -142,10 +142,17 @@ exports.MyNotes = async (req, res) => {
 };
 
 exports.NoteDownload = async (req, res) => {
+  console.log(req.body)
   try {
-    const { id } = req.params;
-    const note = await Note.findById(id);
-    note.görüntülenme += 1;
+    const { id } = req.body;
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Geçersiz ID" });
+    }
+    const note = await Note.findByIdAndUpdate(
+      id,
+      { $inc: { görüntülenme: 1 } },
+      { new: true }
+    );
     await note.save();
     res.json({ data: note }).status(StatusCodes.OK);
   } catch (error) {

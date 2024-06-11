@@ -7,10 +7,10 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
   try {
     let { name, surname, password, email, currentClass } = req.body;
-    console.log(req.body)
+    console.log(req.body);
     const userkontrol = await User.findOne({ email });
     if (userkontrol) {
-      res.status(400).json({ message: "Bu e-posta adresi zaten kayıtlı" });
+      return res.status(400).json({ message: "Bu e-posta adresi zaten kayıtlı" });
     }
     let _password = md5(password);
     const user = new User({
@@ -21,12 +21,10 @@ exports.register = async (req, res) => {
       currentClass,
       isadmin: false
     });
-
     const json = await user.save();
-    res.json({ user: user._id, data: json, message: "Kayıt başarılı" })
-      .status(StatusCodes.CREATED);
+    return res.status(StatusCodes.CREATED).json({ user: user._id, data: json, message: "Kayıt başarılı" });
   } catch (error) {
-    res.status(500).json({ message: "Kullanıcı kaydı başarısız" });
+    return res.status(500).json({ message: "Kullanıcı kaydı başarısız" });
   }
 };
 

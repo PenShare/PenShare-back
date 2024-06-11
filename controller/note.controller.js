@@ -76,18 +76,6 @@ exports.getNoteById = async (req, res) => {
   }
 };
 
-exports.MyFalseNote = async (req, res) => {
-  try {
-    const notes = await Note.find({onay: false });
-    res.json({ data: notes }).status(StatusCodes.OK);
-  } catch (error) {
-    res
-      .json({ message: "Notlar getirilemedi" })
-      .status(StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-};
- 
-
 exports.getNotesByAuthor = async (req, res) => {
   try {
     const { author } = req.params;
@@ -99,8 +87,6 @@ exports.getNotesByAuthor = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR);
   }
 };
-
-
 
 exports.getNotesByClass = async (req, res) => {
   try {
@@ -142,7 +128,7 @@ exports.MyNotes = async (req, res) => {
 };
 
 exports.NoteDownload = async (req, res) => {
-  console.log(req.body)
+
   try {
     const { id } = req.body;
     if (!id) {
@@ -163,9 +149,7 @@ exports.NoteDownload = async (req, res) => {
 }
 
 exports.deleteNoteById = async (req, res) => {
-    console.log(req.body)
   try {
-
     const { id } = req.body;
     const note = await Note.findByIdAndDelete(id);
     if (note) {
@@ -180,3 +164,32 @@ exports.deleteNoteById = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR);
   }
 };
+
+exports.OnayNote = async function (req, res) {
+
+  try {
+    const { id } = req.body;
+    const note = await Note
+      .findByIdAndUpdate(id, { onay: true }, { new: true });
+    if (note) {
+      res.json({ data: note }).status(StatusCodes.OK);
+    }
+    else {
+      res.json({ message: "Not onaylanamadı" }).status(StatusCodes.NOT_FOUND);
+    }
+  }
+  catch (error) {
+    res.json({ message: "Not onaylanamadı" }).status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+}
+exports.MyFalseNote = async (req, res) => {
+  try {
+    const notes = await Note.find({onay: false });
+    res.json({ data: notes }).status(StatusCodes.OK);
+  } catch (error) {
+    res
+      .json({ message: "Notlar getirilemedi" })
+      .status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+};
+ 
